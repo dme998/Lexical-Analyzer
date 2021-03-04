@@ -1,0 +1,10 @@
+/* Project:        Scanner (P1)
+ * Description:    Lexical Analyzer
+ * Author:         Daniel Eggers <dme998@mail.umsl.edu>
+ * Course:         Program Translation (CS4280-001)
+ * Instructor:     Mark Hauschild
+ * Date:           March 8, 2021 
+ * Files:          main.cpp token.h, scanner.cpp, testScanner.cpp, scanner.h, testScanner.h
+ */
+
+
