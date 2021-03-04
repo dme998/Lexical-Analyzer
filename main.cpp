@@ -8,15 +8,18 @@
  */
 
 #include <iostream>
-#include <vector>
+//#include <vector>
 #include <string>
-#include <stdlib.h>
+//#include <stdlib.h>
 //#include <stdio.h>  //fopen
 #include "token.h"
 #include "scanner.h"
 #include "testScanner.h"
 
-bool printHelp();
+using namespace std;
+
+string implicitFileExtension(string filename);
+bool fileExists(string filename);
 
 /**
  * Main executable to run
@@ -24,18 +27,64 @@ bool printHelp();
  * @return 0 on success, 1 on nonfatal error, -1 on fatal error
  */
 int main(int argc, char *argv[]) {
-  std::cout << "Program start." << std::endl;
-
+  cout << "Program start." << endl;
+  
+  switch(argc) {
+    case 1: {
+      cout << "Improper invocation: no file specified." << endl;
+      exit(0);
+      break;
+    }
+    case 2: {
+      string infile = implicitFileExtension((string)argv[1]);
+      if (fileExists(infile)) {
+        cout << "File exists: " << infile << endl;
+      }
+      else {
+        cout << "File not found: " << infile << endl;
+        exit(0);
+      }
+      break;
+    }
+    default:
+      cout << "Improper invocation: wrong number of arguments." << endl;
+      exit(0);
+      break;
+  }
+  
+  /* run testScanner here */
+  
+  cout << "Program end." << endl;
   return 0;
 }
 
 
 /**
- * Prints usage message if improper invocation
- * @return true if error
+ * Appends .fs extension to filename if not provided
+ * @param filename specifies infile
+ * @return filename with .fs extension
  */
-bool printHelp() {
-  
-
-  return 0;
+string implicitFileExtension(string filename) {
+  if (filename.substr(filename.find_last_of(".") + 1) != "fs") {
+    filename.append(".fs");
+  }
+  return filename;
 }
+
+
+/**
+ * Check if file exists
+ * @param filename to check
+ * @return true if exists, otherwise false
+ */
+bool fileExists(string infile) {
+  if (FILE *file = fopen(infile.c_str(), "r")) {
+    fclose(file);
+    return true;
+  }
+  else {
+    return false;
+  }
+}
+
+
