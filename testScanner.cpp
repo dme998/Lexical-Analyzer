@@ -6,7 +6,7 @@
 using std::cout;    using std::endl;
 using std::string;  using std::vector;
 using std::ifstream;
-const bool DEBUG = false;  //set to true to enable verbose print statements throughout run
+const bool DEBUG = true;  //set to true to enable verbose print statements throughout run
 
 /**
  * drives the scanner to lexically analyze a file until EOF and prints tokens to console
@@ -19,7 +19,7 @@ int driver(const std::string &filename) {
   vector<token_t> tokens_v;  //vector to hold all tokens received by scanner
   //vector<char> chars_v;      //vector to hold individual characters
   token_t token;
-  string wipstring;
+  string wipstring;  //work-in-progress string to be appended-to before being passed to scanner
 
   //open file for reading
   ifstream infile(filename);  
@@ -34,8 +34,10 @@ int driver(const std::string &filename) {
   /* read through file char by char, filtering comments and whitespace,
    * building a string to pass to the scanner */
   char c, cc;
-  bool inComment = false; 
-  bool building = true;  //set false once the string is built and ready to be scanned
+  unsigned int line = 1;  //current line number of the file that the token is on
+  bool addLine = false;   //flag that tells program to increment line count after pushing token
+  bool inComment = false; //flag true to ignore characters until we find "$$"
+  bool building = true;   //flag false once the string is built and ready to be scanned
   while(infile.get(c)) {
     if (DEBUG) cout << "c: " << c << endl;
     building = true;
@@ -63,11 +65,21 @@ int driver(const std::string &filename) {
           break;
         case ' ':
           if (DEBUG) cout << "case ws." << endl;
-        case '\n':
-          if (DEBUG) cout << "case newline." << endl;
           if (!inComment) {
             if (DEBUG) cout << "ws-newline marks end of build." << endl;
             building = false;
+          }
+          break;
+        case '\n':
+          if (DEBUG) cout << "case newline." << endl;
+          if (DEBUG) cout << "line = " << line << endl;
+          if (!inComment) {
+            addLine = true;   
+            if (DEBUG) cout << "ws-newline marks end of build." << endl;
+            building = false;
+          }
+          else {
+            line++;
           }
           break;
         default:
@@ -82,16 +94,22 @@ int driver(const std::string &filename) {
     //if we're done building, let's pass the assembled string and tokenize it:
     if (building == false) {
       if (DEBUG) cout << "lex(" << wipstring << ");" << endl;
-      token = lex(wipstring);
-      tokens_v.push_back(token);
+      
+      token = lex(wipstring, line);
+      if (token.id != WHITESPACE_TK) {
+        tokens_v.push_back(token);
+      }
       wipstring = "";  //empty out string so we can build the next one
+      if (addLine) line++;  //increment line number if newline char was found earlier
+      addLine = false;
     }
+    
   }
   infile.close(); cout << "File closed." << endl;
   
 
   //print vector of tokens
-  cout << "\nPrinting final chars vector:" << endl;
+  cout << "\nPrinting final tokens vector:" << endl;
   printTokens(tokens_v);
   
 
