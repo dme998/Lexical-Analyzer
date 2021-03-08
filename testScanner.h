@@ -10,4 +10,18 @@
  */
 int driver(const std::string &filename);
 
+
+/**
+ * prints the character vector all on the same line
+ * @param v char vector
+ */
+void printLexemes(vector<char> const &v); 
+
+
+/**
+ * prints the token vector, formatted one per line
+ * @param v token vector
+ */
+void printTokens(vector<token_t> const &v);
+
 #endif

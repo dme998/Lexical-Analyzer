@@ -1,36 +1,126 @@
 #include <iostream>
+#include <fstream>
 #include "testScanner.h"
 #include "scanner.h"
 #include "token.h"
+using std::cout;    using std::endl;
+using std::string;  using std::vector;
+using std::ifstream;
+const bool DEBUG = false;  //set to true to enable verbose print statements throughout run
 
 /**
  * drives the scanner to lexically analyze a file until EOF and prints tokens to console
  * @param filename name of file to be run through scanner
- * @return 0 if success, 1 if nonfatal error, -1 if fatal error
+ * @return 0 if success, -1 if error
  */
 int driver(const std::string &filename) {
-  std::cout << "Driver start." << std::endl;
-
+  cout << "Driver start." << endl;
+  
+  vector<token_t> tokens_v;  //vector to hold all tokens received by scanner
+  //vector<char> chars_v;      //vector to hold individual characters
   token_t token;
-  std::string s = "arbitrary input";
-  token = lex(s);
-  
-  std::cout << "{" << token.id << ", " << token.instance << ", " << token.line << "}\n";
+  string wipstring;
 
-  /*
-  while (token = lex() && token.id != EOF_TK) {
-    std::cout << "{" << token.id << ", " << token.instance << ", " << token.line << "}"
-    << std::endl;
+  //open file for reading
+  ifstream infile(filename);  
+  if (infile.is_open()) {
+    cout << "File open success." << endl;
   }
-  */
-
-  //run scanner once just to test
-
+  else {
+    cout << "File open error." << endl;
+    return -1;
+  }
   
-  std::cout << "Driver end." << std::endl;
+  /* read through file char by char, filtering comments and whitespace,
+   * building a string to pass to the scanner */
+  char c, cc;
+  bool inComment = false; 
+  bool building = true;  //set false once the string is built and ready to be scanned
+  while(infile.get(c)) {
+    if (DEBUG) cout << "c: " << c << endl;
+    building = true;
+    if (building) {
+      if (DEBUG) cout << "top of switch(" << c << ");" << endl;
+      switch(c) {
+        case '$':
+          if (DEBUG) cout << "case $" << endl;
+          infile.get(cc);
+          if (DEBUG) cout << "cc: " << cc << endl;
+          if (cc == '$') {
+            if (!inComment) {
+              inComment = true;
+              if (DEBUG) cout << "inComment = true\n";
+            }
+            else if (inComment) {
+              inComment = false;
+              if (DEBUG) cout << "inComment = false\n";
+            }
+          }
+          else if (!inComment) {
+            wipstring.push_back(c);
+            if (DEBUG) cout << "wipstring push_back(" << c << ");" << endl;
+          }
+          break;
+        case ' ':
+          if (DEBUG) cout << "case ws." << endl;
+        case '\n':
+          if (DEBUG) cout << "case newline." << endl;
+          if (!inComment) {
+            if (DEBUG) cout << "ws-newline marks end of build." << endl;
+            building = false;
+          }
+          break;
+        default:
+          if (!inComment) {
+            if (DEBUG) cout << "case default." << endl;
+            wipstring.push_back(c);
+            if (DEBUG) cout << "wipstring push_back(" << c << ");" << endl;
+          }
+          break;
+      }
+    } 
+    //if we're done building, let's pass the assembled string and tokenize it:
+    if (building == false) {
+      if (DEBUG) cout << "lex(" << wipstring << ");" << endl;
+      token = lex(wipstring);
+      tokens_v.push_back(token);
+      wipstring = "";  //empty out string so we can build the next one
+    }
+  }
+  infile.close(); cout << "File closed." << endl;
+  
+
+  //print vector of tokens
+  cout << "\nPrinting final chars vector:" << endl;
+  printTokens(tokens_v);
+  
+
+  cout << "Driver end." << endl;
   return 0;
 }
 
+
+/**
+ * prints the character vector on a single line
+ * @param v character vector
+ */
+void printLexemes(vector<char> const &v) {
+  for(unsigned int i=0; i<v.size(); i++) {
+    cout << v.at(i);
+  }
+  cout << endl;
+}
+
+
+/**
+ * prints the token vector, formatted one per line
+ * @param v token vector
+ */
+void printTokens(vector<token_t> const &v) {
+  for(unsigned int i=0; i<v.size(); i++) {
+    cout << "{" << v[i].id << ", " << v[i].instance << ", " << v[i].line << "}\n";
+  }
+}
 
 
 /* wip notes - current design:

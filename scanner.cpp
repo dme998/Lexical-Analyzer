@@ -15,8 +15,11 @@ token_t lex(std::string input) {
   
   //test values
   token.id = KEYWORD_TK;
-  token.instance = "begin";
-  token.line = 2;
+  token.instance = input;
+  token.line = 0;
+  
+  std::cout << "Lex'd input: " << input << std::endl;
+
 
   std::cout << "Scanner end." << std::endl;
   return token;
