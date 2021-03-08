@@ -10,6 +10,7 @@
 #include <iostream>
 //#include <vector>
 #include <string>
+#include <unistd.h>  //for STDOUT_FILENO
 //#include <stdlib.h>
 //#include <stdio.h>  //fopen
 #include "token.h"
@@ -29,6 +30,7 @@ bool fileExists(string filename);
 int main(int argc, char *argv[]) {
   cout << "Program start." << endl;
   
+  string infile;  //this will be the filename with extension
   switch(argc) {
     case 1: {
       cout << "Improper invocation: no file specified." << endl;
@@ -36,7 +38,7 @@ int main(int argc, char *argv[]) {
       break;
     }
     case 2: {
-      string infile = implicitFileExtension((string)argv[1]);
+      infile = implicitFileExtension((string)argv[1]);
       if (fileExists(infile)) {
         cout << "File exists: " << infile << endl;
       }
@@ -52,8 +54,19 @@ int main(int argc, char *argv[]) {
       break;
   }
   
-  /* run testScanner here */
+  /* TODO run testScanner here to process file
+   * if processing stdin instead of a file, we can write that stdin to a tmp file and
+   * then pass the tmp filename as param
+   * OR rather than processing file, we take EITHER file or stdin and load it into a vector,
+   * then the vector can be processed the same way regardless of stdin vs file
+   * See notes about FILTER that counts lines, skips spaces and comments, and makes a string.
+   * */
   
+  if (driver(infile) == -1) {
+    write(STDOUT_FILENO, "driver returned fatal error code.\n", 34);
+    exit(1);
+  }
+
   cout << "Program end." << endl;
   return 0;
 }

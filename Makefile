@@ -14,7 +14,7 @@ main.o: main.cpp token.h
 scanner.o: scanner.cpp scanner.h
 	$(CC) $(CPPFLAGS) -c scanner.cpp
 
-testScanner.o: testScanner.cpp testScanner.h
+testScanner.o: testScanner.cpp testScanner.h 
 	$(CC) $(CPPFLAGS) -c testScanner.cpp
 
 clean:

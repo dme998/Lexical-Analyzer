@@ -1,7 +1,7 @@
-#include "token.h"
 #ifndef TESTSCANNER_H
 #define TESTSCANNER_H
-
+#include <string>
+#include "token.h"
 
 /**
  * drives the scanner to lexically analyze a file until EOF
