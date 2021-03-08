@@ -118,7 +118,8 @@ void printLexemes(vector<char> const &v) {
  */
 void printTokens(vector<token_t> const &v) {
   for(unsigned int i=0; i<v.size(); i++) {
-    cout << "{" << v[i].id << ", " << v[i].instance << ", " << v[i].line << "}\n";
+    //TOKENPRINTS[tokenID_e] to print token description (see token header file)
+    cout << "{" << TOKENPRINTS[ v[i].id ] << ", " << v[i].instance << ", " << v[i].line << "}\n";
   }
 }
 
