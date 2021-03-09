@@ -6,7 +6,7 @@
 using std::cout;    using std::endl;
 using std::string;  using std::vector;
 using std::ifstream;
-const bool DEBUG = true;  //set to true to enable verbose print statements throughout run
+const bool DEBUG = false;  //set to true to enable verbose print statements throughout run
 
 /**
  * drives the scanner to lexically analyze a file until EOF and prints tokens to console

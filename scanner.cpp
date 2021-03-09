@@ -4,31 +4,58 @@
 #include "testScanner.h"
 #include "token.h"
 
+using std::cout;  using std::endl;
+
 /**
  * returns one token 
  * @param input filtered string to be lexically analyzed
+ * @param line current line number of the file that the token is on
  * @return token 
  */
 token_t lex(std::string input, unsigned int line) {
-  std::cout << "Scanner called." << std::endl;
+  cout << "Scanner called." << endl;
 
   token_t token;
   
-  //test values
+  //default values
   token.id = UNKNOWN_TK;
   token.instance = input;
   token.line = line;
+  cout << "Lexing input: " << input << endl;
+
+
+  //determine tokenID and return
   
-  std::cout << "Lexing input: " << input << std::endl;
-
-
-  //determine tokenID
-  //does string contain only whitespace?
+  //is whitespace?
   if (  std::all_of( input.begin(), input.end(), isspace )  ) {
-    std::cout << "String contains only whitespace." << std::endl;
+    cout << "String contains only whitespace." << endl;
     token.id = WHITESPACE_TK;
+    return token;
   }
 
-  std::cout << "Scanner done." << std::endl;
+  //is operator?
+  for(size_t i=0; i<OPERATORS.size(); i++) {
+    if (input == OPERATORS[i]) {
+      token.id = OPERATOR_TK;
+      return token;
+    }
+  }
+
+
+  //is integer?
+  //TODO
+
+  //is keyword? 
+  for(size_t i=0; i<KEYWORDS.size(); i++) {
+    if (input == KEYWORDS[i]) {
+      token.id = KEYWORD_TK;
+      return token;
+    }
+  }
+
+  //is identifier?
+  //TODO
+
+  cout << "Scanner done." << endl;
   return token;
 }
