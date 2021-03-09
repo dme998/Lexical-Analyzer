@@ -96,6 +96,10 @@ int driver(const std::string &filename) {
       if (DEBUG) cout << "lex(" << wipstring << ");" << endl;
       
       token = lex(wipstring, line);
+      if (token.id == UNKNOWN_TK) {
+        cout << "Error: unrecognized token  " << token.instance << "  on line " << token.line << ".\n";
+        return -1;
+      }
       if (token.id != WHITESPACE_TK) {
         tokens_v.push_back(token);
       }
