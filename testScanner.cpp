@@ -14,7 +14,7 @@ const bool DEBUG = false;  //set to true to enable verbose print statements thro
  * @return 0 if success, -1 if error
  */
 int driver(const std::string &filename) {
-  cout << "Driver start." << endl;
+  //cout << "Driver start." << endl;
   
   vector<token_t> tokens_v;  //vector to hold all tokens received by scanner
   //vector<char> chars_v;      //vector to hold individual characters
@@ -24,7 +24,7 @@ int driver(const std::string &filename) {
   //open file for reading
   ifstream infile(filename);  
   if (infile.is_open()) {
-    cout << "File open success." << endl;
+    if (DEBUG) cout << "File open success." << endl;
   }
   else {
     cout << "File open error." << endl;
@@ -109,15 +109,16 @@ int driver(const std::string &filename) {
     }
     
   }
-  infile.close(); cout << "File closed." << endl;
+  infile.close(); 
+  if (DEBUG) cout << "File closed." << endl;
   
 
   //print vector of tokens
-  cout << "\nPrinting final tokens vector:" << endl;
+  if (DEBUG) cout << "\nPrinting final tokens vector:" << endl;
   printTokens(tokens_v);
   
 
-  cout << "Driver end." << endl;
+  //cout << "Driver end." << endl;
   return 0;
 }
 
@@ -145,12 +146,3 @@ void printTokens(vector<token_t> const &v) {
   }
 }
 
-
-/* wip notes - current design:
- * lex() returns a single token: the FIRST lexeme, then stops
- * this driver should stream through file and pass input separated by whitespace
- *      i.e. the driver reads up to whitespace then passes that as input, then it
- *      picks up at the start of the next non-ws character for the next lex(string) call.
- *      
- *      token does not exceed 8 characters
- */

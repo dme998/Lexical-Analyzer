@@ -11,7 +11,7 @@
 //#include <vector>
 #include <string>
 #include <unistd.h>  //for STDOUT_FILENO
-//#include <stdlib.h>
+#include <fstream>
 //#include <stdio.h>  //fopen
 #include "token.h"
 #include "scanner.h"
@@ -28,19 +28,32 @@ bool fileExists(string filename);
  * @return 0 on success, 1 on nonfatal error, -1 on fatal error
  */
 int main(int argc, char *argv[]) {
-  cout << "Program start." << endl;
+  //cout << "Program start." << endl;
   
   string infile;  //this will be the filename with extension
   switch(argc) {
     case 1: {
-      cout << "Improper invocation: no file specified." << endl;
-      exit(0);
+      cout << "No file specified. Using stdin.  Enter 'stop' when finished:" << endl;
+
+      string sin;
+      const string tempfile = "tmp.fs";
+      ofstream myfile(tempfile);
+      while(std::getline(std::cin, sin)) {
+        if (sin == "stop") {
+          infile = (tempfile);
+          break;
+        }
+        else {
+          myfile << sin << endl;
+        }
+      }
+      myfile.close();
       break;
     }
     case 2: {
       infile = implicitFileExtension((string)argv[1]);
       if (fileExists(infile)) {
-        cout << "File exists: " << infile << endl;
+        //cout << "File exists: " << infile << endl;
       }
       else {
         cout << "File not found: " << infile << endl;
@@ -54,20 +67,14 @@ int main(int argc, char *argv[]) {
       break;
   }
   
-  /* TODO run testScanner here to process file
-   * if processing stdin instead of a file, we can write that stdin to a tmp file and
-   * then pass the tmp filename as param
-   * OR rather than processing file, we take EITHER file or stdin and load it into a vector,
-   * then the vector can be processed the same way regardless of stdin vs file
-   * See notes about FILTER that counts lines, skips spaces and comments, and makes a string.
-   * */
-  
+
+  //run testScanner driver
   if (driver(infile) == -1) {
-    write(STDOUT_FILENO, "driver returned fatal error code.\n", 34);
+    write(STDOUT_FILENO, "Driver returned fatal error code.\n", 34);
     exit(1);
   }
-
-  cout << "Program end." << endl;
+  
+  //cout << "Program end." << endl;
   return 0;
 }
 
@@ -99,5 +106,4 @@ bool fileExists(string infile) {
     return false;
   }
 }
-
 

@@ -1,10 +1,36 @@
-/* Project:        Scanner (P1)
- * Description:    Lexical Analyzer
- * Author:         Daniel Eggers <dme998@mail.umsl.edu>
- * Course:         Program Translation (CS4280-001)
- * Instructor:     Mark Hauschild
- * Date:           March 8, 2021 
- * Files:          main.cpp token.h, scanner.cpp, testScanner.cpp, scanner.h, testScanner.h
- */
+Project:        Scanner (P1)
+Description:    Lexical Analyzer
+Author:         Daniel Eggers <dme998@mail.umsl.edu>
+Course:         Program Translation (CS4280-001)
+Instructor:     Mark Hauschild
+Date:           March 8, 2021 
+Files:          main.cpp token.h, scanner.cpp, testScanner.cpp, scanner.h, testScanner.h
+Produces:       tmp.fs (overwrites)
 
+Plain string reader separated by spaces.
+Lines are counted.
 
+Invocation:
+  scanner [file]
+    Processes specified file with extension *.fs
+  scanner [no args]
+    Processes stdin until the user enters 'stop'
+
+Details of functionality:
+  1. main() calls driver() calls lex().
+  2. main processes cmdl arguments and checks if necessary file exists.
+     2a. if the user specifies a file, then that file will be used.
+     2b. if no file is specified, main() will process stdin from the user until the user enters 'stop'.
+         The stdin is directed to a temporary file that will be processed by driver().
+  3. driver() reads from file and acts as a filter, building strings to be passed to lex().
+  4. lex() processes one string at a time and returns it as a token triplet:
+       {id, instance, line}
+  5. driver() pushes each token it receives into a vector.
+  6. When EOF is reached, driver() prints all tokens via the vector.
+
+Permitted input:
+  This scanner can only read tokens separated by spaces.
+  The scanner will print an error message if there's an unrecognized token.
+  Comments start with $$ and end with $$.  
+    Multiline comments are permitted.
+  Excessive whitespace and newlines are permitted.
