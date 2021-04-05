@@ -4,6 +4,7 @@ Author:         Daniel Eggers <dme998@mail.umsl.edu>
 Course:         Program Translation (CS4280-001)
 Instructor:     Mark Hauschild
 Date:           March 8, 2021 
+Test System:    CentOS Linux 7 (Core)
 Files:          main.cpp token.h, scanner.cpp, testScanner.cpp, scanner.h, testScanner.h
 Produces:       tmp.fs (overwrites)
 
